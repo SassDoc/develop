@@ -2,7 +2,7 @@
 title: SassDoc
 email: contact@sassdoc.com
 description: Release the docs!
-baseurl: ""
+baseurl: "/develop"
 url: "http://sassdoc.com"
 twitter_username: sassdoc_
 github_username:  sassdoc
