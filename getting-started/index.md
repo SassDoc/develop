@@ -9,7 +9,7 @@ Getting started with SassDoc could not be any easier.
 
 {% highlight bash %}
 npm install npm@latest -g # SassDoc requires npm 2.0
-npm install sassdoc --tag beta -g
+npm install sassdoc@beta -g
 {% endhighlight %}
 
 ## Comments
