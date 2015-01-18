@@ -14,7 +14,7 @@ title: "Release the docs!"
 npm install npm@latest -g
 
 # Install SassDoc globally
-npm install sassdoc -g
+npm install sassdoc --tag beta -g
 
 # Run SassDoc on your project
 sassdoc source/
