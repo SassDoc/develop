@@ -9,7 +9,8 @@
 <ul class="sidebar__list">
 {% for item in group.items %}
   {% capture tmp %}{{ site.data.routes[item.route] }}index.html{% endcapture %}
-  <li class="sidebar__list-item  {% if tmp == page.url %}active{% endif %}">
+  {% capture page_url %}/develop{{ page.url }}{% endcapture %}
+  <li class="sidebar__list-item  {% if tmp == page_url %}active{% endif %}">
     <a class="sidebar__link" href="{{ site.data.routes[item.route] }}" {% if item._blank %}target="_blank"{% endif %}>{{ item.title }}</a>
   </li>
 {% endfor %}
