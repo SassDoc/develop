@@ -1,5 +1,6 @@
 home: "/develop/"
 command_line: "/develop/getting-started/"
+upgrading: "/develop/upgrading/"
 configuration: "/develop/configuration/"
 annotations: "/develop/annotations/"
 poster_annotations: "/develop/file-level-annotations/"

@@ -1,4 +1,5 @@
 // Dependencies {{{
+// ================
 
 const CombinedStream = require('combined-stream')
 const es = require('event-stream')
@@ -6,6 +7,7 @@ const exec = require('mz/child_process').exec
 const filter = require('through2-filter')
 const fs = require('mz/fs')
 const fse = require('fs-extra-promise')
+const map = require('through2-map')
 const path = require('path')
 const promisePipe = require('promisepipe')
 const readline = require('readline')
@@ -19,8 +21,9 @@ const zip = require('array-zip')
 // }}}
 
 // Helpers {{{
+// ===========
 
-const repoUrl = 'https://raw.githubusercontent.com/SassDoc/sassdoc/master'
+const repoUrl = 'https://raw.githubusercontent.com/SassDoc/sassdoc/develop'
 
 // Say what I'm doing.
 function im(...args) {
@@ -49,30 +52,50 @@ const t = {}
 
 // }}}
 
-// Changelog {{{
+// Pages {{{
+// =========
 
-t.changelog = async () => {
-  const changelog = 'changelog/index.md'
-  const url = `${repoUrl}/CHANGELOG.md`
-  const header = '---\nlayout: default\ntitle: "Changelog"\n---\n\n'
+// Turn GitHub code blocks in Liquide code blocks.
+const convertCodeBlocks = line =>
+  line
+    .replace(/^( *)```([a-z0-9]+)$/, '$1{% highlight $2 %}')
+    .replace(/^( *)```$/, '$1{% endhighlight %}')
 
-  im(`Retrieving changelog from main repository to \`${changelog}\`.`)
+async function page(local, remote, header) {
+  im(`Retrieving \`${remote}\` from main repository to \`${local}\`.`)
 
-  const output = fs.createWriteStream(changelog)
+  const url = `${repoUrl}/${remote}`
+  const output = fs.createWriteStream(local)
 
   output.write(header)
 
   await promisePipe(
     request(url),
     split(/(\n)/),
-    filterCount((line, i) => i > 2),
+    filterCount((line, i) => i > 4),
+    map({ wantStrings: true }, convertCodeBlocks),
     output
   )
 }
 
+t.changelog = () =>
+  page(
+    'changelog/index.md',
+    'CHANGELOG.md',
+    '---\nlayout: default\ntitle: "Changelog"\n---\n\n'
+  )
+
+t.upgrading = () =>
+  page(
+    'upgrading/index.md',
+    'UPGRADE-2.0.md',
+    '---\nlayout: default\ntitle: "Upgrade from 1.0 to 2.0"\n---\n\n'
+  )
+
 // }}}
 
 // Preview {{{
+// ===========
 
 t.preview = async () => {
   const theme = 'node_modules/sassdoc-theme-default'
@@ -101,6 +124,7 @@ t.preview = async () => {
 // }}}
 
 // Themes {{{
+// ==========
 
 const themes = ['default', 'vulcan']
 const themeDirs = themes.map(x => `node_modules/sassdoc-theme-${x}`)
@@ -110,6 +134,7 @@ const themeGallery = 'theme-gallery'
 const sampleDir = `${themeGallery}/sample`
 
 // Sample {{{
+// ----------
 
 t.sample = async () => {
   if (!await fs.exists(sampleDir)) {
@@ -123,6 +148,7 @@ t.sample = async () => {
 // }}}
 
 // Gallery {{{
+// -----------
 
 t['theme-gallery'] = async () => {
   // Ensure sample directory exists.
@@ -180,6 +206,7 @@ t.themes = async () => {
 // }}}
 
 // Gallery {{{
+// ===========
 
 t.gallery = async () => {
   const gallery = await yamlf('_data/gallery.yml')
@@ -212,6 +239,7 @@ t.gallery = async () => {
 // }}}
 
 // Makefile {{{
+// ============
 
 t.makefile = async () => {
   im('Generating makefile.')
@@ -229,6 +257,7 @@ t.makefile = async () => {
 // }}}
 
 // Execution {{{
+// =============
 
 async () => {
   const targets = process.argv.slice(2)

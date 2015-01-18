@@ -10,6 +10,9 @@ title: "Release the docs!"
 
             <div class="megatron__content">
 {% highlight bash %}
+# Ensure npm 2.0 is installed (required for SassDoc)
+npm install npm@latest -g
+
 # Install SassDoc globally
 npm install sassdoc -g
 
@@ -32,6 +35,10 @@ sassdoc source/
 
 <section class="home__section">
     <div class="container">
+
+        <p class="note  note--warning">
+          <strong>Warning:</strong> this is a preview of SassDoc 2.0 which is still a beta release. See the <a href="{{ site.data.routes.changelog }}changelog</a> to see what's new, and don't forget to check the <a href="{{ site.data.routes.upgrading }}">upgrading instructions</a> if you're currently using SassDoc 1.0.
+        </p>
 
         <p>SassDoc is to Sass what JSDoc is to JavaScript: a documentation system to build pretty and powerful docs in the blink of an eye. Among other things, SassDoc is:</p>
 
